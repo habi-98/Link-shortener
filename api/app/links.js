@@ -4,13 +4,16 @@ const Link = require('../models/Link');
 
 const router = express.Router();
 
-router.get('/:shortUrl', (req, res) => {
-   const link = Link.findOne({shortUrl: req.params.shortUrl})
-        .then(() => {
-            if (link) {
-                res.status(301).redirect(link.originalUrl)
-            }
-        })
+router.get('/:shortUrl', async (req, res) => {
+    try {
+        const link = await Link.findOne({shortUrl: req.params.shortUrl})
+
+        if  (link) {
+            res.status(301).redirect(link.originalUrl)
+        }
+    } catch (e) {
+        res.sendStatus(500)
+    }
 });
 
 router.post('/', async (req, res) => {
